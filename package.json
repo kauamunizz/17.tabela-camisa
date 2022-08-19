@@ -1,0 +1,17 @@
+{
+  "name": "17.tabela-camisa",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^3.0.7"
+  },
+  "dependencies": {
+    "npm-sass": "^3.1.0"
+  }
+}

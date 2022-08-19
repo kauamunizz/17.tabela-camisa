@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <section class="container">
+      <div class="central">
+        <h1>Sua tabela perfeita para criação de uniformes </h1>
+        <button type="button">
+          <a href="#tabela">
+            confira aqui
+          </a>
+        </button>
+      </div>
+    </section>
+    <section id="tabela">
+      <h2>Criação de tabela:</h2>
+
+      <div class="tabela">
+        <div class="content-tabela">
+          <table id="TableToExport">
+            <thead>
+              <tr class="principal">
+                <th>Nome</th>
+                <th>Tamanho</th>
+                <th>Quantidade</th>
+                <th>Nome escrito</th>
+                <!-- <th>Numero escrito</th>
+                <th>Excluir</th> -->
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <!-- <tr>
+            <td>Alfreds Futterkiste</td>
+            <td>Maria Anders</td>
+            <td>Germany</td>
+            <td>Germany</td>
+            <td>
+              <input type="text">
+            </td>
+            <span>
+              <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
+            </span>
+          </tr>
+          <tr>
+            <td>Centro comercial Moctezuma</td>
+            <td>Francisco Chang</td>
+            <td>Mexico</td>
+            <td>Mexico</td>
+            <td>Mexico</td>
+          </tr> -->
+          
+          <img class="add" src="./public/imgs/icons8-add-48.svg" alt="adicionar linha">
+        </div>
+        
+        <button id="sheetjsexport"><b>Export as XLSX</b></button>
+      </div>
+
+
+    </section>
+
+
+
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script type="module" src="/src/scripts/index.js"></script>
+  </body>
+</html>
