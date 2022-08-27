@@ -1,7 +1,7 @@
-"strict mode"
-
-
 import '../styles/styles.scss';
+
+
+"strict mode"
 
 
 const index = (() => {
@@ -10,77 +10,70 @@ const index = (() => {
         list: []
     }
 
-    function createRow(row) {
-        const r = row || {
+    function createRow(items) {
+        const rowTeste = items || {
             id: Date.now(),
             nome: '',
             tamanho: '',
             quantidade: '',
             nomeEscrito: '',
-            numEscrito:''
-        };
+            numeroEscrito: ''
+        }
+        const {id} = rowTeste;
+        console.log('create', state)
 
-        return /*html*/`
-        <tr class='secundario' data-id=${r.id}>
-            <td><input type="text" value=${r.nome}></td>
-            <td><input type="text" value=${r.tamanho}></td>
-            <td><input type="text" value=${r.quantidade}></td>
-            <td><input type="text" value=${r.nomeEscrito}></td>
-            <td><input type="text" value=${r.numEscrito}></td>
-            <td>
-                <button type="button">
-                    <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
-                </button>
-                <button class="salvar" type="button">salvar</button>
-            </td>
-        </tr>
+        return /* html */ `
+            <tr data-id=${id}>
+                <td><input type="text" value=${rowTeste.nome}></td>
+                <td><input type="text" value=${rowTeste.tamanho}></td>
+                <td><input type="text" value=${rowTeste.quantidade}></td>
+                <td><input type="text" value=${rowTeste.nomeEscrito}></td>
+                <td><input type="text" value=${rowTeste.numeroEscrito}></td>
+                <td class="botoes">
+                    <button type="button">
+                        <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
+                    </button>
+                    <button class="salvar" type="button">✅</button>
+                </td>
+            </tr>
         `;
     }
 
-    function renderTable() {
-        const table = document.querySelector('#TableToExport tbody');
-        table.innerHTML = '';
-        
-        state.list.forEach(row => {
-            table.insertAdjacentHTML('beforeend', createRow(row));
-        });
-    }
+    function saveRow() {
+        const container = document.querySelector('#TableToExport tbody');
+        const inputs = container.querySelectorAll('input');
 
-    function saveRow(row) {
-        const id = Number(row.dataset.id);
-        const item = state.list.find(f => f.id === id);
-        const itemRow = item || {
-            id: Date.now(),
-            nome: '',
-            tamanho: '',
-            quantidade: '',
-            nomeEscrito: '',
-            numEscrito:''
-        };
-        console.log(id, item);
-
-        const inputs = row.querySelectorAll('input');
         const nome = inputs[0].value;
         const tamanho = inputs[1].value;
         const quantidade = inputs[2].value;
         const nomeEscrito = inputs[3].value;
         const numEscrito = inputs[4].value;
         
-        const rowItem = {
+        const newRow = {
             id: Date.now(),
             nome: nome,
             tamanho: tamanho,
             quantidade: quantidade,
             nomeEscrito: nomeEscrito,
-            numEscrito: numEscrito
+            numeroEscrito: numEscrito
         }
-        state.list.push(rowItem);
-        renderTable();
-        console.log(state.list);
+
+        state.list.push(newRow);
+        console.log('saverow',state.list);
+
+        renderTask();
     }
 
 
-    // temp1.find(f => f.id === 1661177453622)
+    function renderTask() {
+        const {list} = state;
+        const table = document.querySelector('#TableToExport tbody');
+        table.innerHTML = '';
+        
+        list.forEach((items) => {
+            table.insertAdjacentHTML('afterbegin', createRow(items));
+        });
+    }
 
     function events() {
         
@@ -92,23 +85,24 @@ const index = (() => {
         });
         
         document.querySelector('.add').addEventListener('click', () => {
-            document.querySelector('#TableToExport > tbody')
-            .insertAdjacentHTML('afterend', createRow())
+            document.querySelector('tbody').insertAdjacentHTML('afterbegin', createRow());
+        });
+
+        document.querySelector('#TableToExport').addEventListener('click', (event) => {
+            const click = event.target;
+            // console.log(click.closest('tr'));
+
+            if (click.classList.contains('salvar')) {
+                saveRow(click.closest('tr'));
+            }
+            else if (click.classList.contains('remove')) {
+                click.closest('tr').remove();
+                console.log(click.closest('tr'));
+            }
         })
         
-        document.querySelector('#TableToExport').addEventListener('click', (event) => {
-            const element = event.target;
-            
-            if (element.classList.contains('remove')) {
-                element.closest('tr').remove();
-            } 
-            else if (element.classList.contains('salvar')) {
-                saveRow(element.closest('tr'));
-            }
-        });
     }
-    
-    
+
     function init() {
         events();
     }

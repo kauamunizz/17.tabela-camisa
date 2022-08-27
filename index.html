@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
+
   <body>
+
     <section class="container">
       <div class="central">
         <h1>Sua tabela perfeita para criação de uniformes </h1>
@@ -17,6 +19,7 @@
         </button>
       </div>
     </section>
+
     <section id="tabela">
       <h2>Criação de tabela:</h2>
 
@@ -30,16 +33,31 @@
                 <th>Quantidade</th>
                 <th>Nome escrito</th>
                 <th>Numero escrito</th>
-                <th>Excluir</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            
+            <tbody>
+              <!-- <tr class='secundario' data-id=${r.id}>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td class="botoes">
+                  <button type="button">
+                      <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
+                  </button>
+                  <button class="salvar" type="button">✅</button>
+                </td>
+              </tr> -->
+            </tbody>
+
           </table>
           
           <img class="add" src="./public/imgs/icons8-add-48.svg" alt="adicionar linha">
         </div>
         
-        <button id="sheetjsexport"><b>Export as XLSX</b></button>
+        <button class="download" id="sheetjsexport"><b>Baixar planilha</b></button>
       </div>
 
 
