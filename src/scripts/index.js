@@ -20,7 +20,7 @@ const index = (() => {
             numeroEscrito: ''
         }
         const {id} = rowTeste;
-        console.log('create', state)
+        console.log('create', state.list)
 
         return /* html */ `
             <tr data-id=${id}>
@@ -64,7 +64,6 @@ const index = (() => {
         renderTask();
     }
 
-
     function renderTask() {
         const {list} = state;
         const table = document.querySelector('#TableToExport tbody');
@@ -73,6 +72,13 @@ const index = (() => {
         list.forEach((items) => {
             table.insertAdjacentHTML('afterbegin', createRow(items));
         });
+    }
+
+    
+    function deleteRow(id) {
+        state.list = state.list.filter(atual => atual.id !== Number(id));
+        
+        renderTask();
     }
 
     function events() {
@@ -96,12 +102,14 @@ const index = (() => {
                 saveRow(click.closest('tr'));
             }
             else if (click.classList.contains('remove')) {
-                click.closest('tr').remove();
-                console.log(click.closest('tr'));
+                const id = click.closest('tr').dataset;
+                console.log(id);
+                deleteRow(id);
             }
         })
         
     }
+
 
     function init() {
         events();
