@@ -10,8 +10,8 @@ const index = (() => {
         list: []
     }
 
-    function createRow(items) {
-        const rowTeste = items || {
+    function createRow(row) {
+        const rowTeste = row || {
             id: Date.now(),
             nome: '',
             tamanho: '',
@@ -19,16 +19,21 @@ const index = (() => {
             nomeEscrito: '',
             numeroEscrito: ''
         }
-        const {id} = rowTeste;
-        console.log('create', state.list)
 
-        return /* html */ `
-            <tr data-id=${id}>
-                <td><input type="text" value=${rowTeste.nome}></td>
-                <td><input type="text" value=${rowTeste.tamanho}></td>
-                <td><input type="text" value=${rowTeste.quantidade}></td>
-                <td><input type="text" value=${rowTeste.nomeEscrito}></td>
-                <td><input type="text" value=${rowTeste.numeroEscrito}></td>
+        document.querySelector('#TableToExport tbody').insertAdjacentHTML('afterbegin', /* html */ `
+            <tr data-id="${rowTeste.id}" data-method="${row ? 'update' : 'create'}">
+                <td><input type="text" value="${rowTeste.nome}" required></td>
+                <td>
+                    <select value="${rowTeste.tamanho}" required>
+                        <option value='P'>Tamanho P</option>
+                        <option value='M'>Tamanho M</option>
+                        <option value='G'>Tamanho G</option>
+                        <option value='GG'>Tamanho GG</option>
+                    </select>
+                </td>
+                <td><input type="number" min='1' value="${rowTeste.quantidade}" required></td>
+                <td><input type="text" value="${rowTeste.nomeEscrito}" required></td>
+                <td><input type="number" min='0' value="${rowTeste.numeroEscrito}" required></td>
                 <td class="botoes">
                     <button type="button">
                         <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
@@ -36,18 +41,41 @@ const index = (() => {
                     <button class="salvar" type="button">✅</button>
                 </td>
             </tr>
-        `;
+        `);
     }
 
-    function saveRow() {
-        const container = document.querySelector('#TableToExport tbody');
-        const inputs = container.querySelectorAll('input');
+    function validateRow(row) {
+        let error = true;
+        const inputs = row.querySelectorAll('input');
+        const select = row.querySelector('select');
 
         const nome = inputs[0].value;
-        const tamanho = inputs[1].value;
-        const quantidade = inputs[2].value;
-        const nomeEscrito = inputs[3].value;
-        const numEscrito = inputs[4].value;
+        const tamanho = select.value;
+        const quantidade = Number(inputs[1].value);
+        const nomeEscrito = inputs[2].value;
+        const numEscrito = Number(inputs[3].value);
+
+        if (nome === '') {
+            error = false;
+            alert('O nome deverá ser preenchido');
+        }
+        else if (quantidade <= 0 || quantidade > 99) {
+            error = false;
+            alert('A quantidade deverá ser entre 0 e 99');
+        }
+
+        return error;
+    }
+
+    function saveRow(row) {
+        const inputs = row.querySelectorAll('input');
+        const select = row.querySelector('select');
+
+        const nome = inputs[0].value;
+        const tamanho = select.value;
+        const quantidade = inputs[1].value;
+        const nomeEscrito = inputs[2].value;
+        const numEscrito = inputs[3].value;
         
         const newRow = {
             id: Date.now(),
@@ -59,8 +87,22 @@ const index = (() => {
         }
 
         state.list.push(newRow);
-        console.log('saverow',state.list);
 
+        renderRow();
+    }
+
+    function updateRow(row) {
+        const { id } = row.dataset;
+        const inputs = row.querySelectorAll('input');
+        const select = row.querySelector('select');
+        const rowUpdate = state.list.find(atual => atual.id === Number(id));
+
+        rowUpdate.nome = inputs[0].value,
+        rowUpdate.tamanho = select.value,
+        rowUpdate.quantidade = inputs[1].value,
+        rowUpdate.nomeEscrito = inputs[2].value,
+        rowUpdate.numeroEscrito = inputs[3].value
+        
         renderRow();
     }
 
@@ -69,9 +111,7 @@ const index = (() => {
         const table = document.querySelector('#TableToExport tbody');
         table.innerHTML = '';
         
-        list.forEach((items) => {
-            table.insertAdjacentHTML('afterbegin', createRow(items));
-        });
+        list.forEach((row) => { createRow(row) });
     }
 
     
@@ -84,27 +124,39 @@ const index = (() => {
     function events() {
         
         document.getElementById("sheetjsexport").addEventListener('click', function() {
-            /* Create worksheet from HTML DOM TABLE */
-            var wb = XLSX.utils.table_to_book(document.getElementById("TableToExport"));
-            /* Export to file (start a download) */
-            XLSX.writeFile(wb, "SheetJSTable.xlsx");
+            const newList = state.list.map(({id, ...row}) => row);
+            const worksheet = XLSX.utils.json_to_sheet(newList);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Camisas");
+
+            XLSX.writeFile(workbook, "Camisas.xlsx");
+            // /* Create worksheet from HTML DOM TABLE */
+            // var wb = XLSX.utils.table_to_book(document.getElementById("TableToExport"));
+            // /* Export to file (start a download) */
+            // XLSX.writeFile(wb, "SheetJSTable.xlsx");
         });
         
-        document.querySelector('.add').addEventListener('click', () => {
-            document.querySelector('tbody').insertAdjacentHTML('afterbegin', createRow());
-        });
+        document.querySelector('.add').addEventListener('click', () => createRow());
 
         document.querySelector('#TableToExport').addEventListener('click', (event) => {
             const click = event.target;
-            // console.log(click.closest('tr'));
 
             if (click.classList.contains('salvar')) {
-                saveRow(click.closest('tr'));
+                const row = click.closest('tr');
+                const {method} = row.dataset;
+                
+                if (validateRow(row)) {
+                    if (method === 'create') {
+                        saveRow(row);
+                    }
+                    else {
+                        updateRow(row);
+                    }
+                }
             }
             else if (click.classList.contains('remove')) {
                 const id = click.closest('tr').dataset.id;
                 deleteRow(id);
-                console.log(id);
             }
         })
         
@@ -112,6 +164,7 @@ const index = (() => {
 
 
     function init() {
+        createRow();
         events();
     }
     
