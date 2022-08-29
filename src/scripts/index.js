@@ -61,10 +61,10 @@ const index = (() => {
         state.list.push(newRow);
         console.log('saverow',state.list);
 
-        renderTask();
+        renderRow();
     }
 
-    function renderTask() {
+    function renderRow() {
         const {list} = state;
         const table = document.querySelector('#TableToExport tbody');
         table.innerHTML = '';
@@ -78,7 +78,7 @@ const index = (() => {
     function deleteRow(id) {
         state.list = state.list.filter(atual => atual.id !== Number(id));
         
-        renderTask();
+        renderRow();
     }
 
     function events() {
@@ -102,9 +102,9 @@ const index = (() => {
                 saveRow(click.closest('tr'));
             }
             else if (click.classList.contains('remove')) {
-                const id = click.closest('tr').dataset;
-                console.log(id);
+                const id = click.closest('tr').dataset.id;
                 deleteRow(id);
+                console.log(id);
             }
         })
         
