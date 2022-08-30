@@ -20,7 +20,7 @@ const index = (() => {
             numeroEscrito: ''
         }
 
-        document.querySelector('#TableToExport tbody').insertAdjacentHTML('afterbegin', /* html */ `
+        document.querySelector('#TableToExport tbody').insertAdjacentHTML('beforeend', /* html */ `
             <tr data-id="${rowTeste.id}" data-method="${row ? 'update' : 'create'}">
                 <td><input type="text" value="${rowTeste.nome}" required></td>
                 <td>
@@ -33,7 +33,7 @@ const index = (() => {
                 </td>
                 <td><input type="number" min='1' value="${rowTeste.quantidade}" required></td>
                 <td><input type="text" value="${rowTeste.nomeEscrito}" required></td>
-                <td><input type="number" min='0' value="${rowTeste.numeroEscrito}" required></td>
+                <td><input class='end' type="number" min='0' value="${rowTeste.numeroEscrito}" required></td>
                 <td class="botoes">
                     <button type="button">
                         <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
@@ -57,11 +57,23 @@ const index = (() => {
 
         if (nome === '') {
             error = false;
-            alert('O nome deverá ser preenchido');
+            alert('O nome deverá ser preenchido.');
+        }
+        else if (tamanho === Number) {
+            error = false;
+            alert('A tamanho deverá ser P, M, G ou GG.');
         }
         else if (quantidade <= 0 || quantidade > 99) {
             error = false;
-            alert('A quantidade deverá ser entre 0 e 99');
+            alert('A quantidade de camisas deverá ser entre 1 e 99.');
+        }
+        else if (nomeEscrito === '') {
+            error = false;
+            alert('O nome escrito deverá ser preenchido.');
+        }
+        else if (numEscrito <= 0 || numEscrito > 99) {
+            error = false;
+            alert('O numero escrito deverá ser entre 0 e 99.');
         }
 
         return error;
@@ -111,7 +123,13 @@ const index = (() => {
         const table = document.querySelector('#TableToExport tbody');
         table.innerHTML = '';
         
-        list.forEach((row) => { createRow(row) });
+        
+        if (list.length) {
+            list.forEach((row) => { createRow(row) });
+        }
+        else {
+            createRow();
+        }
     }
 
     
@@ -130,10 +148,6 @@ const index = (() => {
             XLSX.utils.book_append_sheet(workbook, worksheet, "Camisas");
 
             XLSX.writeFile(workbook, "Camisas.xlsx");
-            // /* Create worksheet from HTML DOM TABLE */
-            // var wb = XLSX.utils.table_to_book(document.getElementById("TableToExport"));
-            // /* Export to file (start a download) */
-            // XLSX.writeFile(wb, "SheetJSTable.xlsx");
         });
         
         document.querySelector('.add').addEventListener('click', () => createRow());
@@ -158,8 +172,7 @@ const index = (() => {
                 const id = click.closest('tr').dataset.id;
                 deleteRow(id);
             }
-        })
-        
+        })        
     }
 
 
