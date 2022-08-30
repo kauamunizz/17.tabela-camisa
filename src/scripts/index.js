@@ -22,7 +22,7 @@ const index = (() => {
 
         document.querySelector('#TableToExport tbody').insertAdjacentHTML('beforeend', /* html */ `
             <tr data-id="${rowTeste.id}" data-method="${row ? 'update' : 'create'}">
-                <td><input type="text" value="${rowTeste.nome}" required></td>
+                <td><input type="text" value="${rowTeste.nome}" required placeholder="Digite seu nome:"></td>
                 <td>
                     <select value="${rowTeste.tamanho}" required>
                         <option value='P'>Tamanho P</option>
@@ -31,17 +31,25 @@ const index = (() => {
                         <option value='GG'>Tamanho GG</option>
                     </select>
                 </td>
-                <td><input type="number" min='1' value="${rowTeste.quantidade}" required></td>
-                <td><input type="text" value="${rowTeste.nomeEscrito}" required></td>
-                <td><input class='end' type="number" min='0' value="${rowTeste.numeroEscrito}" required></td>
+                <td><input type="number" min='1' value="${rowTeste.quantidade}" required placeholder="Selecione a quantidade:"></td>
+                <td><input type="text" value="${rowTeste.nomeEscrito}" required placeholder="Ex: Neymar"></td>
+                <td><input class='end' type="number" min='0' value="${rowTeste.numeroEscrito}" required placeholder="Ex: 10"></td>
                 <td class="botoes">
                     <button type="button">
-                        <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remover linha">
+                        <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remove row">
                     </button>
-                    <button class="salvar" type="button">✅</button>
+                    <button type="button">
+                        <img class="salvar" src="./public/imgs/icon-checked.svg" alt="apply row">
+                    </button>
                 </td>
             </tr>
         `);
+        focusRow();
+    }
+
+    function focusRow() {
+        document.querySelector('#TableToExport tbody').lastElementChild
+        .querySelector('.end').addEventListener('focus', () => createRow());    
     }
 
     function validateRow(row) {
@@ -149,7 +157,8 @@ const index = (() => {
 
             XLSX.writeFile(workbook, "Camisas.xlsx");
         });
-        
+
+
         document.querySelector('.add').addEventListener('click', () => createRow());
 
         document.querySelector('#TableToExport').addEventListener('click', (event) => {
@@ -172,7 +181,7 @@ const index = (() => {
                 const id = click.closest('tr').dataset.id;
                 deleteRow(id);
             }
-        })        
+        });
     }
 
 
