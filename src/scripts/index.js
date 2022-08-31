@@ -10,7 +10,7 @@ const index = (() => {
         list: []
     }
 
-    function createRow(row) {
+    function createRow(row, lastRow) {
         const rowTeste = row || {
             id: Date.now(),
             nome: '',
@@ -33,7 +33,7 @@ const index = (() => {
                 </td>
                 <td><input type="number" min='1' value="${rowTeste.quantidade}" required placeholder="Selecione a quantidade:"></td>
                 <td><input type="text" value="${rowTeste.nomeEscrito}" required placeholder="Ex: Neymar"></td>
-                <td><input class='end' type="number" min='0' value="${rowTeste.numeroEscrito}" required placeholder="Ex: 10"></td>
+                <td><input class='${lastRow ? 'end' : ''}' type="number" min='0' value="${rowTeste.numeroEscrito}" required placeholder="Ex: 10"></td>
                 <td class="botoes">
                     <button type="button">
                         <img class="remove" src="./public/imgs/icons8-remove-48.svg" alt="remove row">
@@ -44,12 +44,6 @@ const index = (() => {
                 </td>
             </tr>
         `);
-        focusRow();
-    }
-
-    function focusRow() {
-        document.querySelector('#TableToExport tbody').lastElementChild
-        .querySelector('.end').addEventListener('focus', () => createRow());    
     }
 
     function validateRow(row) {
@@ -133,7 +127,7 @@ const index = (() => {
         
         
         if (list.length) {
-            list.forEach((row) => { createRow(row) });
+            list.forEach((row, index) => { createRow(row, index === list.length-1) });
         }
         else {
             createRow();
@@ -158,12 +152,12 @@ const index = (() => {
             XLSX.writeFile(workbook, "Camisas.xlsx");
         });
 
-
+        
         document.querySelector('.add').addEventListener('click', () => createRow());
-
+        
         document.querySelector('#TableToExport').addEventListener('click', (event) => {
             const click = event.target;
-
+            
             if (click.classList.contains('salvar')) {
                 const row = click.closest('tr');
                 const {method} = row.dataset;
@@ -181,10 +175,31 @@ const index = (() => {
                 const id = click.closest('tr').dataset.id;
                 deleteRow(id);
             }
+            else if (click.classList.contains('end')) {
+                createRow();
+            }
         });
+
+        // document.querySelector('.container .central a').addEventListener('click', (event) => {
+        //     event.preventDefault();
+    
+        //     const href = event.currentTarget.getAttribute("href");
+        //     console.log(href);
+        //     const offsetTop = document.querySelector(href).offsetTop;
+        //     console.log(offsetTop);
+
+        //     window.scroll({
+        //       top: offsetTop,
+        //       behavior: "smooth"
+        //     });
+        // })
+
+        // document.querySelector('#TableToExport tbody tr:last-child .end').addEventListener('focus', () => createRow());
+
+        // document.querySelector('.end').addEventListener('focus', () => createRow());
     }
-
-
+    
+    
     function init() {
         createRow();
         events();
